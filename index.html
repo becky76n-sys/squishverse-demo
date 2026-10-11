@@ -136,6 +136,91 @@ function memoryGame(){
 gift.addEventListener('click',collect);
 gift.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')collect()});
 document.addEventListener('keydown',e=>{if(e.key==='ArrowUp'||e.key==='w')move(0,-1);if(e.key==='ArrowDown'||e.key==='s')move(0,1);if(e.key==='ArrowLeft'||e.key==='a')move(-1,0);if(e.key==='ArrowRight'||e.key==='d')move(1,0)});
-</script>
+
+function showArcade(){
+ const p=document.getElementById('panel');
+ p.style.display='block';
+ p.innerHTML=`
+ <h2>🕹️ Squishverse Arcade</h2>
+ <p>Choose your challenge!</p>
+ <button onclick="smashGame()">💥 Squish Smash</button>
+ <button onclick="splashGame()">💧 Squish Splash</button>
+ <button onclick="closePanel()">Back to Plaza</button>`;
+}
+function smashGame(){
+ const p=document.getElementById('panel');
+ p.style.display='block';
+ let score=0,time=20;
+ p.innerHTML='<h2>💥 Squish Smash</h2><p>Smash the squishies! Avoid 🐝!</p><p>Time: <b id="smTime">20</b> | Score: <b id="smScore">0</b></p><div id="smTargets" style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px"></div><button onclick="closePanel()">Leave game</button>';
+ const targets=document.getElementById('smTargets');
+ function spawn(){
+  targets.innerHTML='';
+  for(let i=0;i<6;i++){
+   let b=document.createElement('button');
+   let bad=Math.random()<.2;
+   b.textContent=bad?'🐝':['🩷','🟣','🫧','⭐'][Math.floor(Math.random()*4)];
+   b.onclick=()=>{
+    if(bad)score=Math.max(0,score-2);
+    else score++;
+    document.getElementById('smScore').textContent=score;
+    b.disabled=true;
+    b.textContent='✨';
+    if([...targets.children].every(q=>q.disabled))spawn();
+   };
+   targets.appendChild(b);
+  }
+ }
+ spawn();
+ let timer=setInterval(()=>{
+  if(!document.getElementById('smTime')){clearInterval(timer);return}
+  time--;
+  document.getElementById('smTime').textContent=time;
+  if(time<=0){
+   clearInterval(timer);
+   targets.innerHTML='';
+   targets.innerHTML='<p>Time up! Your score: '+score+'</p><button onclick="smashGame()">Play again</button>';
+  }
+ },1000);
+}
+function splashGame(){
+ const p=document.getElementById('panel');
+ p.style.display='block';
+ let dug=new Set(),source=1,goal=34,won=false;
+ p.innerHTML='<h2>💧 Squish Splash</h2><p>Dig a path from 💧 to 🪴. Tap dirt tiles to dig. Avoid 🪨!</p><div id="waterGrid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px"></div><p id="waterMsg">Find a connected route!</p><button onclick="splashGame()">Restart puzzle</button><button onclick="closePanel()">Back to Arcade</button>';
+ const grid=document.getElementById('waterGrid');
+ for(let i=0;i<36;i++){
+  let b=document.createElement('button');
+  b.style.padding='8px 0';
+  b.style.fontSize='19px';
+  b.style.background='#c99b70';
+  if(i===source){b.textContent='💧';b.style.background='#59c9f4'}
+  else if(i===goal){b.textContent='🪴';b.style.background='#91d88b'}
+  else if([8,9,14,20,26,27].includes(i)){b.textContent='🪨';b.dataset.rock='yes'}
+  else b.textContent=' ';
+  b.onclick=()=>{
+   if(won||i===source||i===goal)return;
+   if(b.dataset.rock){document.getElementById('waterMsg').textContent='Rock blocks this way! Try another tile.';return}
+   if(dug.has(i))return;
+   dug.add(i);
+   b.textContent=' ';
+   b.style.background='#f4dfb9';
+   let seen=new Set([source]),q=[source];
+   while(q.length){
+    let n=q.shift(),r=Math.floor(n/6),c=n%6;
+    for(let j of [n-6,n+6,n-1,n+1]){
+     if(j<0||j>=36||Math.abs(Math.floor(j/6)-r)+Math.abs(j%6-c)!==1||seen.has(j))continue;
+     if(j===goal||dug.has(j)){seen.add(j);q.push(j)}
+    }
+   }
+   if(seen.has(goal)){
+    won=true;
+    document.getElementById('waterMsg').textContent='You did it! 💦 The Squishling is happy! +5 stars';
+    document.getElementById('stars').textContent=Number(document.getElementById('stars').textContent)+5;
+    seen.forEach(n=>{if(n!==source&&n!==goal)grid.children[n].style.background='#59c9f4'});
+   }
+  };
+  grid.appendChild(b);
+ }
+}</script>
 </body>
 </html>
