@@ -103,7 +103,7 @@ small{display:block;padding:15px;color:#7c6b90}
 <div id="panel"></div>
 <small>Squishverse · Squish Quest · Plaza Prototype 2 ✨</small>
 <script>
-let x=17,y=73,stars=0,collected=false;
+let x=17,y=73,stars=Number(localStorage.getItem('squishStars')||0),collected=false;
 const player=document.getElementById('player'),gift=document.getElementById('gift');
 function move(dx,dy){
  x=Math.max(3,Math.min(89,x+dx*7));
