@@ -3,58 +3,111 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#9bdcf2">
 <title>Squishverse: Squish Quest</title>
 <style>
+:root{--ink:#49365e;--purple:#9560dc;--pink:#ffb7ce;--gold:#ffd979}
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;text-align:center;color:#45316b;background:linear-gradient(#b9ecff,#fff0d9);min-height:100vh}
-header{padding:18px 10px;background:#fff8;border-bottom:3px solid #fff}
-h1{margin:0;color:#8d4de8;font-size:clamp(25px,7vw,38px)}
-header p{margin:6px 0 0}
-#stats{display:flex;justify-content:center;gap:22px;padding:12px;font-weight:bold}
-#world{position:relative;margin:0 auto;width:min(94vw,520px);height:360px;overflow:hidden;border:5px solid white;border-radius:24px;background:linear-gradient(#9be6ff 0 48%,#8cdb91 48%);box-shadow:0 8px 20px #6a5b8233}
-.cloud{position:absolute;font-size:35px}
-#plaza{position:absolute;bottom:-65px;left:18%;width:64%;height:210px;background:#f7d8ad;transform:perspective(150px) rotateX(12deg);border-radius:45%}
-#fountain{position:absolute;left:40%;top:48%;font-size:60px}
-.tree{position:absolute;bottom:70px;font-size:52px}
-#gift{position:absolute;top:55%;left:72%;font-size:49px;cursor:pointer;filter:drop-shadow(0 0 9px gold);animation:bob 1s infinite alternate}
-@keyframes bob{to{transform:translateY(-9px) rotate(8deg)}}
-#player{position:absolute;left:16%;top:63%;font-size:45px;transition:left .15s,top .15s;filter:drop-shadow(0 3px 2px #5555)}
-#message{min-height:44px;padding:10px;font-weight:bold}
+body{margin:0;background:#f5e8ff;color:var(--ink);font-family:system-ui,-apple-system,sans-serif;text-align:center}
+header{padding:17px 10px 12px;background:linear-gradient(135deg,#fff4fa,#e8dcff,#d8f7ff);border-bottom:3px solid white}
+h1{margin:0;font-size:clamp(27px,7vw,39px);letter-spacing:-1px;color:#8550c7;text-shadow:0 2px white}
+header p{margin:3px 0;font-size:13px;letter-spacing:1px}
+#stats{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;padding:11px}
+.stat{background:white;border:2px solid #fff;border-radius:22px;padding:7px 14px;box-shadow:0 3px 10px #69528a18;font-weight:800}
+#world{position:relative;isolation:isolate;overflow:hidden;width:min(96vw,560px);height:clamp(360px,105vw,490px);max-height:68vh;margin:0 auto;border:5px solid white;border-radius:25px;background:linear-gradient(#8eddf7 0%,#d4f5ff 34%,#a4dc9d 34%,#65bd7d 100%);box-shadow:0 10px 28px #57417430;touch-action:manipulation}
+#world:before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse at 50% 45%,#fff8 0%,transparent 54%),linear-gradient(110deg,#fff2,transparent 38%,#496d3910)}
+.cloud{position:absolute;font-size:clamp(24px,7vw,42px);filter:drop-shadow(0 3px 1px #fff8);animation:drift 8s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translateX(9px)}}
+.sun{position:absolute;right:9%;top:5%;font-size:38px;filter:drop-shadow(0 0 12px #ffe99a)}
+.hill{position:absolute;bottom:48%;width:75%;height:24%;border-radius:50%;background:#7bc985;z-index:-1}
+.hill.left{left:-19%}.hill.right{right:-22%;background:#8bd495}
+.path{position:absolute;z-index:0;background:#f5d9ac;border:3px solid #fff0d1;box-shadow:inset 0 0 0 2px #d9b78a55}
+.path.main{left:32%;top:35%;width:36%;height:75%;clip-path:polygon(25% 0,75% 0,100% 100%,0 100%);border-radius:35%}
+.path.cross{left:-5%;top:55%;width:110%;height:18%;border-radius:50%;transform:rotate(-4deg)}
+.tile{position:absolute;z-index:1;width:30px;height:22px;border:1px solid #c69e7455;border-radius:4px;transform:rotate(-12deg);opacity:.55}
+.building{position:absolute;z-index:2;top:25%;width:27%;height:27%;border:3px solid #fff;border-radius:12px 12px 5px 5px;box-shadow:0 7px 0 #7d5a4830,0 12px 12px #334d3622}
+.building:before{content:"";position:absolute;left:-10%;top:-19%;width:120%;height:28%;border:3px solid #fff;border-radius:12px 12px 4px 4px;background:var(--roof);box-shadow:0 4px 0 #76516c25}
+.building .window{position:absolute;bottom:17%;left:12%;width:27%;height:32%;border:3px solid #fff;border-radius:7px;background:#a5e8ff;box-shadow:inset 0 0 0 2px #fff7}
+.building .window.two{left:auto;right:12%}
+.building .door{position:absolute;bottom:0;left:40%;width:23%;height:42%;background:#ac7d65;border:3px solid white;border-bottom:0;border-radius:9px 9px 0 0}
+.building .sign{position:absolute;z-index:2;top:12%;left:0;width:100%;font-size:clamp(8px,2.3vw,12px);font-weight:900;color:#65466d;text-shadow:0 1px #fff}
+.market{left:5%;background:#ffb9d0;--roof:#ed83b1}
+.cafe{right:5%;background:#ffdb91;--roof:#ecaa62}
+.toyshop{left:7%;top:54%;width:25%;height:20%;background:#cbbaff;--roof:#a78be8}
+.shopname{position:absolute;left:0;right:0;top:18%;font-size:10px;font-weight:900}
+.flowerbed{position:absolute;z-index:2;background:#458a57;border:3px solid #8cce83;border-radius:50%;box-shadow:inset 0 0 0 4px #72ad65}
+.flowerbed span{position:absolute;font-size:19px;filter:drop-shadow(0 2px 1px #244b3544)}
+.tree{position:absolute;z-index:3;font-size:clamp(34px,9vw,52px);filter:drop-shadow(0 4px 1px #3b684944)}
+#fountain{position:absolute;z-index:4;left:50%;top:47%;transform:translate(-50%,-50%);width:105px;height:85px;border-radius:50%;background:linear-gradient(#b8f1ff,#64c7e9 40%,#f1d8ff 42%,#bba1db 65%,#8e76b6);border:5px solid #fff4e5;box-shadow:0 7px 0 #927ba9,0 12px 13px #375a4844,inset 0 0 0 4px #ffffff70}
+#fountain:before{content:"";position:absolute;width:35px;height:38px;left:30px;top:-18px;border-radius:45% 45% 30% 30%;background:linear-gradient(90deg,#78c5e9,#e1faff,#6bbbe6);border:3px solid white;box-shadow:0 -8px 0 -3px #fff}
+#fountain:after{content:"✦";position:absolute;left:39px;top:-32px;color:white;font-size:17px;text-shadow:0 0 8px #fff}
+.gardenflower{position:absolute;z-index:3;font-size:21px;filter:drop-shadow(0 2px 1px #3e6c3d66)}
+#player{position:absolute;z-index:7;left:17%;top:73%;font-size:43px;line-height:1;filter:drop-shadow(0 5px 2px #44334b44);transition:left .15s,top .15s;user-select:none}
+#gift{position:absolute;z-index:8;left:76%;top:61%;font-size:42px;cursor:pointer;filter:drop-shadow(0 0 9px #ffe568);animation:giftfloat 1s ease-in-out infinite alternate}
+@keyframes giftfloat{to{transform:translateY(-8px) rotate(7deg);filter:drop-shadow(0 0 15px gold)}}
+.sparkle{position:absolute;z-index:5;color:white;text-shadow:0 0 9px #fff9;font-size:20px;animation:twinkle 1.6s infinite alternate}
+@keyframes twinkle{to{opacity:.25;transform:scale(.7)}}
+#message{min-height:43px;padding:11px 12px;font-size:14px;font-weight:750}
 .controls{display:flex;justify-content:center;gap:10px;margin:5px}
-button{border:0;border-radius:15px;padding:13px 18px;font-size:17px;font-weight:bold;color:white;background:#9052e9;box-shadow:0 4px #6334aa;cursor:pointer;touch-action:manipulation}
-button:active{transform:translateY(3px);box-shadow:0 1px #6334aa}
-#giftButton{background:#ff9d36;box-shadow:0 4px #bf6920}
-#extras{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:16px auto;max-width:520px}
-#panel{display:none;background:white;margin:12px auto;padding:20px;border-radius:20px;width:min(92vw,450px)}
+button{font:inherit;font-weight:800;border:0;border-radius:15px;padding:12px 17px;color:white;background:var(--purple);box-shadow:0 4px 0 #6941a0;cursor:pointer;touch-action:manipulation}
+button:active{transform:translateY(3px);box-shadow:0 1px 0 #6941a0}
+.controls button{min-width:61px;font-size:21px}
+#extras{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:10px}
+#extras button{font-size:14px;padding:12px}
+#giftButton{background:#ff9d46;box-shadow:0 4px #bf6920}
+#panel{display:none;background:white;width:min(92vw,450px);margin:12px auto;padding:19px;border:3px solid white;border-radius:22px;box-shadow:0 6px 20px #57417420}
 .toy{font-size:65px}
-small{display:block;padding:12px;color:#6d6181}
+small{display:block;padding:15px;color:#7c6b90}
 </style>
 </head>
 <body>
-<header><h1>✨ Squishverse ✨</h1><p><b>Squish Quest</b> — A Whole World of Wonder</p></header>
-<div id="stats"><span>⭐ Stars: <b id="stars">0</b></span><span>🎁 Gifts: <b id="gifts">0</b>/1</span></div>
-<div id="world" aria-label="Squish Plaza game">
-<div class="cloud" style="left:8%;top:9%">☁️</div><div class="cloud" style="right:9%;top:14%">☁️</div>
-<div style="position:absolute;left:5%;top:34%;font-size:42px">🏠</div>
-<div style="position:absolute;right:4%;top:34%;font-size:42px">🏪</div>
-<div id="plaza"></div><div id="fountain">⛲</div>
-<div class="tree" style="left:3%">🌳</div><div class="tree" style="right:3%">🌳</div>
-<div id="player">🧸</div><div id="gift" role="button" aria-label="Mystery gift">🎁</div>
+<header>
+<h1>✨ Squishverse ✨</h1>
+<p>SQUISH QUEST · A WHOLE WORLD OF WONDER</p>
+</header>
+<div id="stats">
+<div class="stat">⭐ Stars: <b id="stars">0</b></div>
+<div class="stat">🎁 Gifts: <b id="gifts">0</b>/1</div>
 </div>
-<div id="message">Welcome, Explorer! Find the glowing mystery gift!</div>
-<div class="controls"><button onclick="move(0,-1)">⬆️</button></div>
-<div class="controls"><button onclick="move(-1,0)">⬅️</button><button onclick="move(0,1)">⬇️</button><button onclick="move(1,0)">➡️</button></div>
-<div id="extras"><button id="giftButton" onclick="collect()">🎁 Collect Gift</button><button onclick="popGame()">🫧 Squish Pop</button><button onclick="memoryGame()">🧠 Memory Game</button></div>
+<div id="world" aria-label="Explore Squish Plaza">
+<div class="sun">☀️</div>
+<div class="cloud" style="left:7%;top:7%">☁️</div>
+<div class="cloud" style="left:46%;top:4%;animation-delay:-3s">☁️</div>
+<div class="hill left"></div><div class="hill right"></div>
+<div class="building market"><div class="sign">MYSTERY MARKET</div><div class="window"></div><div class="window two"></div><div class="door"></div></div>
+<div class="building cafe"><div class="sign">SUNBEAM CAFÉ</div><div class="window"></div><div class="window two"></div><div class="door"></div></div>
+<div class="building toyshop"><div class="sign">TOY SHOP</div><div class="window"></div><div class="window two"></div><div class="door"></div></div>
+<div class="path main"></div><div class="path cross"></div>
+<div class="tile" style="left:38%;top:77%"></div><div class="tile" style="left:49%;top:81%"></div><div class="tile" style="left:58%;top:74%"></div><div class="tile" style="left:45%;top:68%"></div><div class="tile" style="left:55%;top:63%"></div><div class="tile" style="left:35%;top:63%"></div>
+<div class="flowerbed" style="left:35%;top:39%;width:30%;height:11%"><span style="left:9%;top:8%">🌼</span><span style="left:36%;top:0%">🌷</span><span style="left:65%;top:8%">🌸</span><span style="left:82%;top:22%">🌼</span></div>
+<div class="flowerbed" style="left:35%;top:78%;width:30%;height:10%"><span style="left:8%;top:0%">🌸</span><span style="left:35%;top:10%">🌼</span><span style="left:63%;top:0%">🌷</span><span style="left:80%;top:10%">🌸</span></div>
+<div class="tree" style="left:1%;top:48%">🌳</div><div class="tree" style="right:1%;top:48%">🌳</div>
+<div class="tree" style="left:34%;top:21%;font-size:34px">🌲</div><div class="tree" style="right:33%;top:21%;font-size:34px">🌳</div>
+<div class="gardenflower" style="left:7%;top:78%">🌷</div><div class="gardenflower" style="left:16%;top:84%">🌼</div><div class="gardenflower" style="right:7%;top:79%">🌸</div><div class="gardenflower" style="right:17%;top:85%">🌷</div>
+<div id="fountain" aria-label="Plaza fountain"></div>
+<div class="sparkle" style="left:25%;top:45%">✦</div><div class="sparkle" style="right:25%;top:44%;animation-delay:-.7s">✧</div><div class="sparkle" style="left:65%;top:83%;animation-delay:-1s">✦</div>
+<div id="player" aria-label="Your teddy explorer">🧸</div>
+<div id="gift" role="button" aria-label="Mystery gift" tabindex="0">🎁</div>
+</div>
+<div id="message">Welcome, Explorer! Explore the plaza and find the glowing gift!</div>
+<div class="controls"><button onclick="move(0,-1)" aria-label="Move up">⬆️</button></div>
+<div class="controls"><button onclick="move(-1,0)" aria-label="Move left">⬅️</button><button onclick="move(0,1)" aria-label="Move down">⬇️</button><button onclick="move(1,0)" aria-label="Move right">➡️</button></div>
+<div id="extras">
+<button id="giftButton" onclick="collect()">🎁 Collect Gift</button>
+<button onclick="popGame()">🫧 Squish Pop</button>
+<button onclick="memoryGame()">🧠 Memory Match</button>
+</div>
 <div id="panel"></div>
-<small>Prototype 1 • Made with imagination 💜</small>
+<small>Squishverse · Squish Quest · Plaza Prototype 2 ✨</small>
 <script>
-let x=16,y=63,stars=0,collected=false;
+let x=17,y=73,stars=0,collected=false;
 const player=document.getElementById('player'),gift=document.getElementById('gift');
 function move(dx,dy){
- x=Math.max(3,Math.min(88,x+dx*7));y=Math.max(38,Math.min(83,y+dy*7));
+ x=Math.max(3,Math.min(89,x+dx*7));
+ y=Math.max(35,Math.min(87,y+dy*6));
  player.style.left=x+'%';player.style.top=y+'%';
- if(!collected&&Math.abs(x-72)<13&&Math.abs(y-55)<16){collect()}
+ if(!collected&&Math.abs(x-76)<13&&Math.abs(y-61)<17)collect();
 }
 function collect(){
  if(collected){document.getElementById('message').textContent='Your mystery gift is already collected! Enjoy your new toy!';return}
@@ -62,24 +115,25 @@ function collect(){
  document.getElementById('stars').textContent=stars;
  document.getElementById('gifts').textContent='1';
  gift.style.display='none';
- document.getElementById('message').textContent='You found a mystery gift! Opening your surprise...';
+ document.getElementById('message').textContent='✨ You found a mystery gift! ✨';
  const p=document.getElementById('panel');p.style.display='block';
  p.innerHTML='<div class="toy">🦊</div><h2>You found a Squishy Fox!</h2><p>A new friend for your Squishverse collection!</p><button onclick="closePanel()">Yay! Keep exploring</button>';
 }
 function closePanel(){document.getElementById('panel').style.display='none';document.getElementById('message').textContent='Your Squishy Fox is in your collection! Keep exploring!'}
 function popGame(){
  const p=document.getElementById('panel');p.style.display='block';let n=0;
- p.innerHTML='<h2>🫧 Squish Pop!</h2><p>Tap 5 bubbles to win!</p><div id="bubbles" style="font-size:40px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap"></div><p id="popCount">Popped: 0/5</p><button onclick="closePanel()">Back to plaza</button>';
+ p.innerHTML='<h2>🫧 Squish Pop!</h2><p>Tap all 5 bubbles to win!</p><div id="bubbles" style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap"></div><p id="popCount">Popped: 0/5</p><button onclick="closePanel()">Back to plaza</button>';
  const b=document.getElementById('bubbles');
- for(let i=0;i<5;i++){let z=document.createElement('button');z.textContent='🫧';z.style.padding='5px';z.onclick=()=>{if(z.textContent!=='✨'){z.textContent='✨';n++;document.getElementById('popCount').textContent='Popped: '+n+'/5';if(n===5){stars+=5;document.getElementById('stars').textContent=stars;document.getElementById('popCount').textContent='You won 5 bonus stars! ⭐'}}};b.appendChild(z)}
+ for(let i=0;i<5;i++){let z=document.createElement('button');z.textContent='🫧';z.style.fontSize='28px';z.style.padding='7px';z.onclick=()=>{if(z.textContent!=='✨'){z.textContent='✨';n++;document.getElementById('popCount').textContent='Popped: '+n+'/5';if(n===5){stars+=5;document.getElementById('stars').textContent=stars;document.getElementById('popCount').textContent='You won 5 bonus stars! ⭐'}}};b.appendChild(z)}
 }
 function memoryGame(){
- const p=document.getElementById('panel');p.style.display='block';let cards=['🐱','🐱','🐸','🐸','🦊','🦊'].sort(()=>Math.random()-.5),open=[],matched=0;
+ const p=document.getElementById('panel');p.style.display='block';let cards=['🐱','🐱','🐸','🐸','🦊','🦊'].sort(()=>Math.random()-.5),open=[],matched=0,locked=false;
  p.innerHTML='<h2>🧠 Memory Match</h2><p>Find the three matching pairs!</p><div id="cards" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"></div><button onclick="closePanel()">Back to plaza</button>';
- cards.forEach((v,i)=>{let b=document.createElement('button');b.textContent='❔';b.style.fontSize='28px';b.style.padding='12px 4px';b.onclick=()=>{if(b.disabled||open.length===2)return;b.textContent=v;open.push({b,v});if(open.length===2){if(open[0].v===open[1].v){open.forEach(c=>c.b.disabled=true);matched++;if(matched===3){stars+=10;document.getElementById('stars').textContent=stars;p.querySelector('p').textContent='You won 10 bonus stars! ⭐'}}else{let old=open.slice();setTimeout(()=>old.forEach(c=>c.b.textContent='❔'),650)}open=[]}};document.getElementById('cards').appendChild(b)})
+ cards.forEach(v=>{let b=document.createElement('button');b.textContent='❔';b.style.fontSize='28px';b.style.padding='12px 4px';b.onclick=()=>{if(locked||b.disabled)return;b.textContent=v;open.push({b,v});if(open.length===2){if(open[0].v===open[1].v){open.forEach(c=>c.b.disabled=true);matched++;open=[];if(matched===3){stars+=10;document.getElementById('stars').textContent=stars;p.querySelector('p').textContent='You won 10 bonus stars! ⭐'}}else{locked=true;let old=open.slice();open=[];setTimeout(()=>{old.forEach(c=>c.b.textContent='❔');locked=false},650)}}};document.getElementById('cards').appendChild(b)})
 }
-document.addEventListener('keydown',e=>{if(e.key==='ArrowUp'||e.key==='w')move(0,-1);if(e.key==='ArrowDown'||e.key==='s')move(0,1);if(e.key==='ArrowLeft'||e.key==='a')move(-1,0);if(e.key==='ArrowRight'||e.key==='d')move(1,0)});
 gift.addEventListener('click',collect);
+gift.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')collect()});
+document.addEventListener('keydown',e=>{if(e.key==='ArrowUp'||e.key==='w')move(0,-1);if(e.key==='ArrowDown'||e.key==='s')move(0,1);if(e.key==='ArrowLeft'||e.key==='a')move(-1,0);if(e.key==='ArrowRight'||e.key==='d')move(1,0)});
 </script>
 </body>
 </html>
