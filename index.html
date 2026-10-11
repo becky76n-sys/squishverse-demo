@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squishverse: Squish Quest</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;text-align:center;color:#45316b;background:linear-gradient(#b9ecff,#fff0d9);min-height:100vh}
+header{padding:18px 10px;background:#fff8;border-bottom:3px solid #fff}
+h1{margin:0;color:#8d4de8;font-size:clamp(25px,7vw,38px)}
+header p{margin:6px 0 0}
+#stats{display:flex;justify-content:center;gap:22px;padding:12px;font-weight:bold}
+#world{position:relative;margin:0 auto;width:min(94vw,520px);height:360px;overflow:hidden;border:5px solid white;border-radius:24px;background:linear-gradient(#9be6ff 0 48%,#8cdb91 48%);box-shadow:0 8px 20px #6a5b8233}
+.cloud{position:absolute;font-size:35px}
+#plaza{position:absolute;bottom:-65px;left:18%;width:64%;height:210px;background:#f7d8ad;transform:perspective(150px) rotateX(12deg);border-radius:45%}
+#fountain{position:absolute;left:40%;top:48%;font-size:60px}
+.tree{position:absolute;bottom:70px;font-size:52px}
+#gift{position:absolute;top:55%;left:72%;font-size:49px;cursor:pointer;filter:drop-shadow(0 0 9px gold);animation:bob 1s infinite alternate}
+@keyframes bob{to{transform:translateY(-9px) rotate(8deg)}}
+#player{position:absolute;left:16%;top:63%;font-size:45px;transition:left .15s,top .15s;filter:drop-shadow(0 3px 2px #5555)}
+#message{min-height:44px;padding:10px;font-weight:bold}
+.controls{display:flex;justify-content:center;gap:10px;margin:5px}
+button{border:0;border-radius:15px;padding:13px 18px;font-size:17px;font-weight:bold;color:white;background:#9052e9;box-shadow:0 4px #6334aa;cursor:pointer;touch-action:manipulation}
+button:active{transform:translateY(3px);box-shadow:0 1px #6334aa}
+#giftButton{background:#ff9d36;box-shadow:0 4px #bf6920}
+#extras{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:16px auto;max-width:520px}
+#panel{display:none;background:white;margin:12px auto;padding:20px;border-radius:20px;width:min(92vw,450px)}
+.toy{font-size:65px}
+small{display:block;padding:12px;color:#6d6181}
+</style>
+</head>
+<body>
+<header><h1>✨ Squishverse ✨</h1><p><b>Squish Quest</b> — A Whole World of Wonder</p></header>
+<div id="stats"><span>⭐ Stars: <b id="stars">0</b></span><span>🎁 Gifts: <b id="gifts">0</b>/1</span></div>
+<div id="world" aria-label="Squish Plaza game">
+<div class="cloud" style="left:8%;top:9%">☁️</div><div class="cloud" style="right:9%;top:14%">☁️</div>
+<div style="position:absolute;left:5%;top:34%;font-size:42px">🏠</div>
+<div style="position:absolute;right:4%;top:34%;font-size:42px">🏪</div>
+<div id="plaza"></div><div id="fountain">⛲</div>
+<div class="tree" style="left:3%">🌳</div><div class="tree" style="right:3%">🌳</div>
+<div id="player">🧸</div><div id="gift" role="button" aria-label="Mystery gift">🎁</div>
+</div>
+<div id="message">Welcome, Explorer! Find the glowing mystery gift!</div>
+<div class="controls"><button onclick="move(0,-1)">⬆️</button></div>
+<div class="controls"><button onclick="move(-1,0)">⬅️</button><button onclick="move(0,1)">⬇️</button><button onclick="move(1,0)">➡️</button></div>
+<div id="extras"><button id="giftButton" onclick="collect()">🎁 Collect Gift</button><button onclick="popGame()">🫧 Squish Pop</button><button onclick="memoryGame()">🧠 Memory Game</button></div>
+<div id="panel"></div>
+<small>Prototype 1 • Made with imagination 💜</small>
+<script>
+let x=16,y=63,stars=0,collected=false;
+const player=document.getElementById('player'),gift=document.getElementById('gift');
+function move(dx,dy){
+ x=Math.max(3,Math.min(88,x+dx*7));y=Math.max(38,Math.min(83,y+dy*7));
+ player.style.left=x+'%';player.style.top=y+'%';
+ if(!collected&&Math.abs(x-72)<13&&Math.abs(y-55)<16){collect()}
+}
+function collect(){
+ if(collected){document.getElementById('message').textContent='Your mystery gift is already collected! Enjoy your new toy!';return}
+ collected=true;stars+=10;
+ document.getElementById('stars').textContent=stars;
+ document.getElementById('gifts').textContent='1';
+ gift.style.display='none';
+ document.getElementById('message').textContent='You found a mystery gift! Opening your surprise...';
+ const p=document.getElementById('panel');p.style.display='block';
+ p.innerHTML='<div class="toy">🦊</div><h2>You found a Squishy Fox!</h2><p>A new friend for your Squishverse collection!</p><button onclick="closePanel()">Yay! Keep exploring</button>';
+}
+function closePanel(){document.getElementById('panel').style.display='none';document.getElementById('message').textContent='Your Squishy Fox is in your collection! Keep exploring!'}
+function popGame(){
+ const p=document.getElementById('panel');p.style.display='block';let n=0;
+ p.innerHTML='<h2>🫧 Squish Pop!</h2><p>Tap 5 bubbles to win!</p><div id="bubbles" style="font-size:40px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap"></div><p id="popCount">Popped: 0/5</p><button onclick="closePanel()">Back to plaza</button>';
+ const b=document.getElementById('bubbles');
+ for(let i=0;i<5;i++){let z=document.createElement('button');z.textContent='🫧';z.style.padding='5px';z.onclick=()=>{if(z.textContent!=='✨'){z.textContent='✨';n++;document.getElementById('popCount').textContent='Popped: '+n+'/5';if(n===5){stars+=5;document.getElementById('stars').textContent=stars;document.getElementById('popCount').textContent='You won 5 bonus stars! ⭐'}}};b.appendChild(z)}
+}
+function memoryGame(){
+ const p=document.getElementById('panel');p.style.display='block';let cards=['🐱','🐱','🐸','🐸','🦊','🦊'].sort(()=>Math.random()-.5),open=[],matched=0;
+ p.innerHTML='<h2>🧠 Memory Match</h2><p>Find the three matching pairs!</p><div id="cards" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"></div><button onclick="closePanel()">Back to plaza</button>';
+ cards.forEach((v,i)=>{let b=document.createElement('button');b.textContent='❔';b.style.fontSize='28px';b.style.padding='12px 4px';b.onclick=()=>{if(b.disabled||open.length===2)return;b.textContent=v;open.push({b,v});if(open.length===2){if(open[0].v===open[1].v){open.forEach(c=>c.b.disabled=true);matched++;if(matched===3){stars+=10;document.getElementById('stars').textContent=stars;p.querySelector('p').textContent='You won 10 bonus stars! ⭐'}}else{let old=open.slice();setTimeout(()=>old.forEach(c=>c.b.textContent='❔'),650)}open=[]}};document.getElementById('cards').appendChild(b)})
+}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowUp'||e.key==='w')move(0,-1);if(e.key==='ArrowDown'||e.key==='s')move(0,1);if(e.key==='ArrowLeft'||e.key==='a')move(-1,0);if(e.key==='ArrowRight'||e.key==='d')move(1,0)});
+gift.addEventListener('click',collect);
+</script>
+</body>
+</html>
