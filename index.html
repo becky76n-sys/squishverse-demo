@@ -113,7 +113,7 @@ function move(dx,dy){
 }
 function collect(){
  if(collected){document.getElementById('message').textContent='Your mystery gift is already collected! Enjoy your new toy!';return}
- collected=true;stars+=10;
+ collected=true;stars+=10;localStorage.setItem('squishStars',stars);
  document.getElementById('stars').textContent=stars;
  document.getElementById('gifts').textContent='1';
  gift.style.display='none';
